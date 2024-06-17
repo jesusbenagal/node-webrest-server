@@ -9,7 +9,8 @@ interface Options {
 }
 
 export class Server {
-  private app = express();
+  public readonly app = express();
+  private serverListener?: any;
   private readonly port: number;
   private readonly publicPath: string;
   private readonly routes: Router;
@@ -26,7 +27,7 @@ export class Server {
     //* Middlewares
     this.app.use(express.json()); // for parsing application/json
     this.app.use(express.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
-    this.app.use(compression());
+    this.app.use(compression()); // Compress all routes
 
     //* Public folders
     this.app.use(express.static(this.publicPath));
@@ -43,8 +44,12 @@ export class Server {
       res.sendFile(indexPath);
     });
 
-    this.app.listen(this.port, () => {
+    this.serverListener = this.app.listen(this.port, () => {
       console.log(`Server is running on port ${this.port}`);
     });
+  }
+
+  public close() {
+    this.serverListener?.close();
   }
 }

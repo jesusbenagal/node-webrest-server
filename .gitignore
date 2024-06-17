@@ -1,5 +1,7 @@
 node_modules
 keys
 .env
+.env.test
 
 /postgres
+/coverage
